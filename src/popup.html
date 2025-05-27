@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pomodoro</title>
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <div id="app">
+
+    <section id="view-timer" class="view active">
+      <header class="top-bar"></header>
+
+      <div class="timer-container">
+        <div class="donut" id="donut">
+          <div class="progress"></div>
+          <div class="inner">
+            <div class="icon-btn eye"></div>
+
+            <div id="time-display">25:00</div>
+            <div id="session-label">FOCUS</div>
+            <div id="status-indicators" class="status"></div>
+          </div>
+        </div>
+      </div>
+
+      <footer class="bottom-bar">
+        <span class="icon-border-wrapper">
+          <button id="btn-reset" class="icon-btn reset">
+            <span class="icon"></span>
+          </button>
+        </span>
+        <button id="btn-start-pause" class="primary-btn">START</button>
+        <span class="icon-border-wrapper">
+          <button id="btn-settings" class="icon-btn settings">
+            <span class="icon"></span>
+          </button>
+        </span>
+      </footer>
+      <button id="btn-skip-fwd" class="skip-fwd-btn" disabled>Skip Fwd.</button>
+    </section>
+
+    <section id="view-settings" class="view">
+      <header class="top-bar">
+        <span class="icon-border-wrapper">
+          <button id="btn-back-settings" class="icon-btn back"></button>
+        </span>
+        <div class="title">Settings</div>
+        <span class="icon-border-wrapper">
+          <button id="btn-close-settings" class="icon-btn close"></button>
+        </span>
+      </header>
+      <div class="tabs">
+        <button id="tab-duration" class="tab active">DURATION</button>
+        <button id="tab-preferences" class="tab">PREFERENCES</button>
+      </div>
+      <div class="settings-list">
+        <div class="setting-item" data-key="focus">
+          <span>Focus Session</span>
+          <span id="label-focus">25 min</span>
+          <span class="arrow"></span> </div>
+        <div class="setting-item" data-key="shortBreak">
+          <span>Short Break</span>
+          <span id="label-shortBreak">5 min</span>
+          <span class="arrow"></span>
+        </div>
+        <div class="setting-item" data-key="longBreak">
+          <span>Long Break</span>
+          <span id="label-longBreak">15 min</span>
+          <span class="arrow"></span>
+        </div>
+        <div class="setting-item" data-key="sessionsBeforeLong">
+          <span>Long break after</span>
+          <span id="label-sessionsBeforeLong">4 Sess.</span>
+          <span class="arrow"></span>
+        </div>
+      </div>
+    </section>
+
+    <section id="view-adjust" class="view">
+      <header class="top-bar">
+        <span class="icon-border-wrapper">
+            <button id="btn-back-adjust" class="icon-btn back"></button>
+        </span>
+        </header>
+
+      <div class="adjust-body">
+        <div class="adjust-content-wrapper">
+            <div class="adjust-title" id="adjust-title">Focus Session</div>
+
+            <div class="timer-adjustment-container">
+                <span class="icon-square-wrapper">
+                    <button id="decrease" class="icon-btn minus"></button>
+                </span>
+
+                <div class="adjust-input-group">
+                    <input type="number" id="adjust-input" min="1" class="number-input" value="25" />
+                    <div class="adjust-unit" id="adjust-unit">min</div>
+                </div>
+
+                <span class="icon-square-wrapper">
+                    <button id="increase" class="icon-btn plus"></button>
+                </span>
+            </div>
+        </div>
+      </div>
+    </section>
+
+  </div>
+  <script src="popup.js"></script>
+</body>
+</html>
