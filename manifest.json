@@ -1,0 +1,43 @@
+// manifest.json
+// Chrome Extension manifest (MV3)
+{
+  "manifest_version": 3,
+  "name": "Pomodoro Timr",
+  "version": "1.1.0",
+  "description": "A sleek, offline-capable Pomodoro timer with badge countdowns and theming.",
+  "icons": {
+    "48": "icons/app-icon-48.png"
+  },
+  "background": {
+    "service_worker": "src/background.js" 
+  },
+  "action": {
+    "default_icon": {
+      "48": "icons/app-icon-48.png",
+      "128": "icons/app-icon-128.png"
+    }
+  },
+  "permissions": [
+    "activeTab",
+    "scripting",
+    "storage",
+    "notifications",
+    "alarms",
+    "action",
+    "offscreen"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": [
+        "sounds/ding-ding-small-bell.mp3",
+        "sounds/ding-small-bell.mp3",
+        "icons/*.png",
+        "src/popup.html", 
+        "src/popup.css",
+        "src/offscreen.html",           // <--- Declare your offscreen document
+        "src/offscreen.js"              // <--- Declare your offscreen script
+      ], 
+      "matches": ["<all_urls>"]
+    }
+  ]
+}
