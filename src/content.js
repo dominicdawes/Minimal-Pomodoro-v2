@@ -9,6 +9,7 @@
     // Fetch HTML and CSS from separate files
     const htmlUrl = chrome.runtime.getURL('src/popup.html'); /* Get the URL for popup.html */
     const cssUrl = chrome.runtime.getURL('src/popup.css');   /* Get the URL for popup.css */
+    const popupJsUrl = chrome.runtime.getURL('src/popup.js'); /* Get the URL for popup.js */
 
     // Variables to hold references to the popup and style sheet
     let popupElement = null;
@@ -31,22 +32,25 @@
             styleLinkElement.href = cssUrl;
             document.head.appendChild(styleLinkElement);
 
+            // Inject popup.js into the page
+            // This script will run in the page's isolated world
+            const script = document.createElement('script');
+            script.src = popupJsUrl;
+            document.body.appendChild(script);
+
             // --- Fix: Implement "click off-screen to close" logic ---
             // We use 'mousedown' instead of 'click' because 'click' fires after 'mouseup',
-            // and we want to capture the event before it bubbles up too much.
+            // and we want to capture the event before it propagates to elements inside the popup.
             document.addEventListener('mousedown', function(event) {
-                // After the first script execution, reset the flag
                 if (isInitialClick) {
-                    isInitialClick = false;
-                    return; // Ignore the very first click that opened the popup
+                    isInitialClick = false; // Allow subsequent clicks to close
+                    return;
                 }
 
-                // If the popup exists and the click target is NOT inside the popup
+                // Check if the click is outside the popup element
                 if (popupElement && !popupElement.contains(event.target)) {
-                    // Start the fade-out effect
                     popupElement.style.opacity = '0';
                     
-                    // Remove the popup and stylesheet after the transition
                     setTimeout(() => {
                         if (popupElement && popupElement.parentNode) {
                             popupElement.parentNode.removeChild(popupElement);
@@ -60,17 +64,63 @@
                 }
             });
             // --- End of "click off-screen to close" logic ---
-
-            // IMPORTANT: If popup.js contains logic that needs to run
-            // directly on the injected HTML, you might need to manually
-            // trigger it or ensure it's compatible with elements loaded this way.
-            // For simple UI, this might be enough. For complex apps, consider
-            // using Shadow DOM or a more structured framework.
-            // Example: If popup.js initializes event listeners, they might need
-            // to be re-initialized AFTER popup.html's content is inserted.
-            // If popup.js is loaded via <script src="popup.js"> in popup.html,
-            // that script should execute automatically once its HTML is part of the DOM.
         })
         .catch(error => console.error('Error loading popup content:', error));
+
+    // Listen for messages from popup.js
+    chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+        if (request.action === "getSettings") {
+            chrome.storage.local.get(request.keys, (items) => {
+                sendResponse({ settings: items });
+            });
+            return true; // Indicate that sendResponse will be called asynchronously
+        } else if (request.action === "saveSetting") {
+            chrome.storage.local.set({ [request.key]: request.value }, () => {
+                sendResponse({ success: true });
+            });
+            return true; // Indicate that sendResponse will be called asynchronously
+        } else if (request.action === "startTimer" || request.action === "pauseTimer" ||
+                   request.action === "resetTimer" || request.action === "skipSession") {
+            // Forward these actions to the background script
+            chrome.runtime.sendMessage(request, (response) => {
+                if (response && response.error) {
+                    console.error("Error from background script:", response.error);
+                }
+                sendResponse(response);
+            });
+            return true; // Indicate that sendResponse will be called asynchronously
+        } else if (request.action === "updateTimer") {
+            // Forward these actions to the background script
+            chrome.runtime.sendMessage(request, (response) => {
+                if (response && response.error) {
+                    console.error("Error from background script:", response.error);
+                }
+                sendResponse(response);
+            });
+            return true;
+        }
+    });
+
+    // Listen for storage changes and send them to popup.js
+    chrome.storage.local.onChanged.addListener((changes, namespace) => {
+        if (namespace === 'local') {
+            const changedSettings = {};
+            for (let key in changes) {
+                changedSettings[key] = changes[key].newValue;
+            }
+            // Send message to popup.js to update its UI
+            popupElement.dispatchEvent(new CustomEvent('extensionStorageUpdate', { detail: changedSettings }));
+        }
+    });
+
+    // Handle initial settings load for popup.js once it's loaded
+    // This uses a custom event to signal popup.js when it's ready and to receive initial settings
+    document.addEventListener('popupReadyForSettings', (event) => {
+        const keys = event.detail.keys;
+        chrome.storage.local.get(keys, (items) => {
+            // Send initial settings back to popup.js via custom event
+            popupElement.dispatchEvent(new CustomEvent('initialExtensionSettings', { detail: items }));
+        });
+    });
 
 })();

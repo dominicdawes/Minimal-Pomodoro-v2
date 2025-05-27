@@ -4,17 +4,18 @@
   "manifest_version": 3,
   "name": "Pomodoro Timr",
   "version": "1.1.0",
-  "description": "A sleek, offline-capable Pomodoro timer with badge countdowns and theming.",
+  "description": "A sleek, offline-capable Pomodoro timer ⏱ ✅ Task Organizer 📊Time Tracker",
   "icons": {
-    "48": "icons/app-icon-48.png"
+      "48": "icons/app_v2-icon-48.png",
+      "128": "icons/app_v2-icon-128.png"
   },
   "background": {
     "service_worker": "src/background.js" 
   },
   "action": {
     "default_icon": {
-      "48": "icons/app-icon-48.png",
-      "128": "icons/app-icon-128.png"
+      "48": "icons/app_v2-icon-48.png",
+      "128": "icons/app_v2-icon-128.png"
     }
   },
   "permissions": [
@@ -31,8 +32,17 @@
       "resources": [
         "sounds/ding-ding-small-bell.mp3",
         "sounds/ding-small-bell.mp3",
-        "icons/*.png",
+        "/icons/fluent-eye-16-reg.svg",
+        "/icons/fluent-arrow-counterclockwise-16-reg.svg",
+        "/icons/fluent-chevron-left-16-regular.svg",
+        "/icons/fluent-chevron-right-16-regular.svg",
+        "/icons/fluent-add-16-regular.svg",
+        "/icons/fluent-subtract-16-regular.svg",
+        "/icons/fluent-settings-20-regular.svg",
+        "/icons/fluent-drink-coffee-16-regular.svg",
+        "/icons/fluent-dismiss-16-regular.svg",
         "src/popup.html", 
+        "src/popup.js",
         "src/popup.css",
         "src/offscreen.html",           // <--- Declare your offscreen document
         "src/offscreen.js"              // <--- Declare your offscreen script

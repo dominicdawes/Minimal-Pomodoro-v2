@@ -1,4 +1,4 @@
-// background.js
+// background.js ("the central brain for the timer")
 // Service worker for alarms, badge updates, notifications, sound
 // persists even whan popup is closed
 

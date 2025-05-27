@@ -37,12 +37,11 @@
 }
 
 /* ───── After your :root block ───── */
-/* FIX: Remove layout-altering properties from html, body as they affect the host page. */
-/* These properties should be applied to the #app container instead. */
+/* FIX: Completely remove 'overflow: hidden' from html, body */
 html, body {
   margin: 0;
   padding: 0;
-  overflow: hidden; /* Keep overflow hidden for the host page to prevent scrollbars if popup extends */
+  /* Removed: overflow: hidden; */ /* This was preventing the main page from scrolling */
   /* Remove width and height from here as they will constrain the entire host page */
   /* width:  var(--popup-size) !important; */
   /* height: var(--popup-size) !important; */
